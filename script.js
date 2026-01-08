@@ -40,6 +40,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 fill="#4B3621" stroke="#3E2B1F" stroke-width="3" />
             </svg>`;
 
+        const isMobile = window.innerWidth < 768;
+        
+        // Use 300 for Desktop, but only 80 for Mobile
+        const beanCount = isMobile ? 80 : 300;
         // INCREASE COUNT: 300 beans to remove gaps
         for (let i = 0; i < 300; i++) {
             const div = document.createElement('div');
@@ -85,6 +89,7 @@ document.addEventListener("DOMContentLoaded", () => {
             opacity: 1,
             duration: 1.2, // Faster rain for more impact
             ease: "bounce.out",
+            force3D: true,
             stagger: {
                 amount: 1, 
                 from: "random"
@@ -119,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .to(".floor-bean", {
             duration: 3, 
             ease: "expo.in", 
-            
+            force3D: true,
             // 1. SUCK INWARDS (Horizontal Center)
             x: (i, target) => {
                 const rect = target.getBoundingClientRect();

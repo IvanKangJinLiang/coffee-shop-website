@@ -188,6 +188,9 @@ html { scroll-behavior: smooth; }
     .floor-bean {
         width: 28px; 
         height: 28px;
+        
+        /* PERFORMANCE FIX: Remove shadow on mobile */
+        filter: none !important; 
     }
 
     /* --- ANIMATION STAGE (MOVED UP) --- */
