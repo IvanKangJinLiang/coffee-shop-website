@@ -228,4 +228,26 @@ html { scroll-behavior: smooth; }
     .fore-leaf { width: 200px; height: auto; right: -10px; bottom: -10px; opacity: 0.6; }
     .menu-section { padding: 60px 20px; }
     .menu-grid { grid-template-columns: 1fr; gap: 30px; }
+
+    /* --- PERFORMANCE: KILL ALL FILTERS --- */
+    /* Filters force the GPU to redraw pixels constantly. Removing them doubles speed. */
+    .r-bean, .r-portafilter, .r-stream, .cup-group, .r-cup-base, .floor-bean {
+        filter: none !important;
+        box-shadow: none !important;
+        -webkit-filter: none !important;
+        backdrop-filter: none !important;
+    }
+
+    /* Remove the blur from steam (it's the most expensive filter) */
+    .r-steam {
+        background: rgba(255, 255, 255, 0.2) !important; /* Simple semi-transparent circle */
+        filter: none !important;
+        opacity: 0 !important; /* Hide steam on mobile if it looks bad without blur */
+    }
+
+    /* Simplify the Cup Base */
+    .r-cup-base {
+        background: rgba(255,255,255,0.1) !important;
+        border: 1px solid rgba(255,255,255,0.3) !important;
+    }
 }
