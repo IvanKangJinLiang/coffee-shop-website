@@ -203,45 +203,72 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ==================================================
-    // 5. MENU SECTION (Cascading Cards)
+    // 5. MENU SECTION (PREMIUM INTERACTION)
     // ==================================================
     
-    // A. Title Animation
-    const menuTitle = document.querySelector(".menu-section h2");
-    gsap.set(menuTitle, { y: 30, opacity: 0 }); // Hide first
-
-    gsap.to(menuTitle, {
-        scrollTrigger: {
-            trigger: ".menu-section",
-            start: "top 70%",
-            toggleActions: "play none none reverse"
-        },
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        ease: "power2.out"
-    });
-
-    // B. Cards Animation
-    // Hide all cards first
-    gsap.set(".menu-item", { y: 50, opacity: 0 });
-
-    ScrollTrigger.batch(".menu-item", {
-        start: "top 80%", // Triggers slightly earlier for better feel
+    // A. Staggered Entrance (Cards fade in one by one)
+    ScrollTrigger.batch(".menu-card", {
+        start: "top 85%",
         onEnter: batch => gsap.to(batch, { 
             opacity: 1, 
             y: 0, 
-            duration: 0.8, 
-            stagger: 0.15, 
-            ease: "power2.out",
-            force3D: true 
-        }),
-        // Reset when scrolling back up so they animate again
-        onLeaveBack: batch => gsap.to(batch, { 
-            opacity: 0, 
-            y: 50, 
-            duration: 0.5 
+            stagger: 0.2, 
+            duration: 1, 
+            ease: "power3.out"
         })
     });
+    
+    gsap.set(".menu-card", { opacity: 0, y: 100 }); // Set hidden state
 
+    // B. The "Magnetic" Floating Effect
+    // When mouse moves over a card, the image moves slightly 
+    // in the direction of the mouse (Parallax)
+    const cards = document.querySelectorAll('.menu-card');
+
+    cards.forEach(card => {
+        const image = card.querySelector('.coffee-img');
+        const number = card.querySelector('.card-bg-text');
+
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            // Calculate mouse position relative to center of card
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+
+            // Move Image (Stronger movement)
+            gsap.to(image, {
+                x: x * 0.15, // Move 15% of mouse distance
+                y: y * 0.15 - 50, // Keep the -50px offset we set in CSS
+                rotation: x * 0.05, // Slight tilt
+                duration: 0.5,
+                ease: "power2.out"
+            });
+
+            // Move Number (Subtle movement in opposite direction for depth)
+            gsap.to(number, {
+                x: -x * 0.05,
+                y: -y * 0.05,
+                duration: 0.5,
+                ease: "power2.out"
+            });
+        });
+
+        // Reset on mouse leave
+        card.addEventListener('mouseleave', () => {
+            gsap.to(image, {
+                x: 0,
+                y: -40, // Back to CSS original position
+                rotation: 0,
+                duration: 0.8,
+                ease: "elastic.out(1, 0.5)"
+            });
+            
+            gsap.to(number, {
+                x: 0,
+                y: 0,
+                duration: 0.8,
+                ease: "power2.out"
+            });
+        });
+    });
 });

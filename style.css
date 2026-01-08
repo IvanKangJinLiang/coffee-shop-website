@@ -185,63 +185,158 @@ header nav ul li a { text-decoration: none; color: #fff; text-transform: upperca
 
 /* --- MENU SECTION (Enhanced) --- */
 .menu-section { 
-    padding: 120px 10%; 
-    background-color: #0a0a0a; 
-    text-align: center; 
+    padding: 150px 5%; 
+    background-color: #050505; 
+    position: relative;
+}
+
+.menu-header {
+    text-align: center;
+    margin-bottom: 80px;
+}
+
+.menu-header p {
+    font-size: 1.1rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #e0c097;
+    opacity: 0.7;
+    margin-top: 10px;
 }
 
 .menu-grid { 
     display: grid; 
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-    gap: 40px; 
-    margin-top: 80px; 
-    text-align: left; 
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+    gap: 60px; 
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
-.menu-item { 
-    padding: 40px; 
-    background: #111; 
-    border: 1px solid #222; 
-    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+/* THE CARD CONTAINER */
+.menu-card {
+    position: relative;
+    height: 500px;
+    background: #0f0f0f;
+    border: 1px solid #1f1f1f;
+    border-radius: 0px; /* Keep sharp for modern feel */
+    overflow: hidden;
+    transition: border-color 0.4s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 40px;
+    cursor: pointer;
 }
 
-/* Hover Effect for Menu Cards */
-.menu-item:hover {
-    transform: translateY(-10px);
+.menu-card:hover {
     border-color: #e0c097;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 
-.menu-item h3 { 
-    margin: 0 0 15px 0; 
-    color: #fff; 
-    font-size: 1.5rem;
+/* BACKGROUND NUMBER (01, 02...) */
+.card-bg-text {
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    font-family: 'Playfair Display', serif;
+    font-size: 12rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.03); /* Barely visible */
+    line-height: 1;
+    z-index: 1;
+    transition: transform 0.5s ease;
 }
 
-.menu-item .price { 
-    display: block; 
-    margin-top: 20px; 
-    color: #e0c097; 
-    font-weight: 700; 
-    font-size: 1.2rem;
+.menu-card:hover .card-bg-text {
+    transform: translate(-20px, 20px); /* Moves slightly on hover */
+    color: rgba(224, 192, 151, 0.05);
 }
 
-/* Add a decorative line under menu items */
-.menu-item::after {
-    content: '';
-    display: block;
-    width: 30px;
-    height: 2px;
-    background: #333;
-    margin-top: 20px;
-    transition: width 0.3s ease, background 0.3s ease;
-}
-
-.menu-item:hover::after {
+/* FLOATING IMAGE WRAPPER */
+.card-image-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    background: #e0c097;
+    height: 100%;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none; /* Let mouse pass through to card */
 }
 
+.coffee-img {
+    width: 220px;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 50%; /* Circle cut */
+    filter:  grayscale(0.3) contrast(1.1);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+    transition: transform 0.5s ease, filter 0.5s ease;
+    
+    /* Center it initially */
+    transform: translateY(-40px);
+}
+
+.menu-card:hover .coffee-img {
+    filter: grayscale(0) contrast(1);
+    transform: translateY(-50px) scale(1.05); /* Lifts up */
+}
+
+/* CONTENT AT BOTTOM */
+.card-content {
+    position: relative;
+    z-index: 3;
+    transform: translateY(10px);
+    transition: transform 0.4s ease;
+}
+
+.menu-card:hover .card-content {
+    transform: translateY(0);
+}
+
+.menu-card h3 {
+    font-size: 2rem;
+    margin: 0;
+    color: #fff;
+}
+
+.menu-card .desc {
+    font-size: 0.9rem;
+    color: #888;
+    margin: 10px 0 20px 0;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #333;
+    padding-top: 20px;
+}
+
+.menu-card .price {
+    font-size: 1.5rem;
+    color: #e0c097;
+}
+
+.add-btn {
+    background: transparent;
+    border: 1px solid #fff;
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.menu-card:hover .add-btn {
+    background: #e0c097;
+    border-color: #e0c097;
+    color: #000;
+}
 html { scroll-behavior: smooth; }
 
 /* ========================================= */
@@ -322,7 +417,10 @@ html { scroll-behavior: smooth; }
     .origins { flex-direction: column; padding: 80px 20px; text-align: center; }
     .origins-content { text-align: center; }
     .fore-leaf { width: 150px; right: -10px; bottom: 0px; }
-    .menu-section { padding: 60px 20px; }
+    .menu-section { padding: 100px 20px; }
+    .menu-card { height: 450px; }
+    .card-bg-text { font-size: 8rem; }
+    .coffee-img { width: 180px; height: 180px; }
     .menu-grid { grid-template-columns: 1fr; gap: 30px; }
 
     /* --- PERFORMANCE: KILL ALL FILTERS --- */
