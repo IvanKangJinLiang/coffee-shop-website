@@ -155,7 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 4. ORIGINS SECTION (Parallax + Text Reveal)
     // ==================================================
     
-    // A. Background Parallax (The subtle movement)
+    // A. Background Parallax
     gsap.to(".origins-bg-layer", {
         scrollTrigger: { 
             trigger: "#origins", 
@@ -168,81 +168,80 @@ document.addEventListener("DOMContentLoaded", () => {
         force3D: true
     });
 
-    // B. Leaf Parallax (Moves faster + Rotates)
+    // B. Leaf Parallax
     gsap.to(".fore-leaf", {
         scrollTrigger: { 
             trigger: "#origins", 
             start: "top bottom", 
             end: "bottom top", 
-            scrub: 1.5 // Slower scrub smoothing
+            scrub: 1.5 
         },
         y: -200, 
-        rotation: 15, // Adds a slight organic tilt
+        rotation: 15, 
         ease: "none",
         force3D: true
     });
 
-    // C. Content Reveal (Title, Text, Button)
-    // Selects the h2, p, and btn inside .origins-content
+    // C. Content Reveal (Robust)
+    // 1. Hide elements immediately via JS
     const originElements = document.querySelectorAll(".origins-content h2, .origins-content p, .origins-content a");
-    
-    gsap.fromTo(originElements, 
-        { 
-            y: 50, 
-            opacity: 0 
+    gsap.set(originElements, { y: 50, opacity: 0 }); // <--- HIDE HERE
+
+    // 2. Animate them in
+    gsap.to(originElements, {
+        scrollTrigger: {
+            trigger: "#origins",
+            start: "top 60%", 
+            toggleActions: "play none none reverse"
         },
-        {
-            scrollTrigger: {
-                trigger: "#origins",
-                start: "top 60%", // Triggers when section is in view
-                toggleActions: "play none none reverse"
-            },
-            y: 0,
-            opacity: 1,
-            duration: 1,
-            stagger: 0.2, // One after another
-            ease: "power3.out"
-        }
-    );
+        y: 0,
+        opacity: 1,
+        duration: 1,
+        stagger: 0.2, 
+        ease: "power3.out"
+    });
 
 
     // ==================================================
     // 5. MENU SECTION (Cascading Cards)
     // ==================================================
     
-    // A. Animate the Section Title first
-    gsap.from(".menu-section h2", {
+    // A. Title Animation
+    const menuTitle = document.querySelector(".menu-section h2");
+    gsap.set(menuTitle, { y: 30, opacity: 0 }); // Hide first
+
+    gsap.to(menuTitle, {
         scrollTrigger: {
             trigger: ".menu-section",
             start: "top 70%",
             toggleActions: "play none none reverse"
         },
-        y: 30,
-        opacity: 0,
+        y: 0,
+        opacity: 1,
         duration: 1,
         ease: "power2.out"
     });
 
-    // B. Animate the Cards (Batch Stagger)
-    // This looks for all .menu-item elements and plays them in sequence
+    // B. Cards Animation
+    // Hide all cards first
+    gsap.set(".menu-item", { y: 50, opacity: 0 });
+
     ScrollTrigger.batch(".menu-item", {
-        start: "top 75%", // When the top of the card hits 75% down the screen
+        start: "top 80%", // Triggers slightly earlier for better feel
         onEnter: batch => gsap.to(batch, { 
             opacity: 1, 
             y: 0, 
             duration: 0.8, 
-            stagger: 0.15, // 0.15s delay between each card
+            stagger: 0.15, 
             ease: "power2.out",
             force3D: true 
         }),
+        // Reset when scrolling back up so they animate again
         onLeaveBack: batch => gsap.to(batch, { 
             opacity: 0, 
-            y: 50, // Resets them down so they can slide up again
+            y: 50, 
             duration: 0.5 
         })
     });
-    
-    // Set initial state for cards (Hidden and pushed down)
-    gsap.set(".menu-item", { opacity: 0, y: 50 });
 
 });
