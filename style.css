@@ -130,22 +130,122 @@ header nav ul li a { text-decoration: none; color: #fff; text-transform: upperca
 }
 
 /* ORIGINS & MENU SECTIONS */
-.origins { position: relative; display: flex; align-items: center; padding: 0 10%; overflow: hidden; }
+/* --- ORIGINS SECTION (Enhanced) --- */
+.origins { 
+    position: relative; 
+    display: flex; 
+    align-items: center; 
+    padding: 0 10%; 
+    overflow: hidden; 
+    /* Create a dark overlay gradient for better text readability */
+    background: linear-gradient(to right, #000 0%, transparent 100%);
+}
+
 .origins-bg-layer {
     position: absolute; top: 0; left: 0; width: 100%; height: 120%;
     background-image: url('https://images.unsplash.com/photo-1519336367661-eba9c1dfa5e9?q=80&w=2070&auto=format&fit=crop');
-    background-size: cover; z-index: 1; filter: brightness(0.4);
+    background-size: cover; 
+    background-position: center;
+    z-index: 1; 
+    filter: brightness(0.4) saturate(0.8); /* Moodier look */
 }
-.origins-content { position: relative; z-index: 3; max-width: 500px; }
+
+.origins-content { 
+    position: relative; 
+    z-index: 3; 
+    max-width: 500px; 
+    /* Initial state for JS to animate from */
+    opacity: 0; 
+    transform: translateY(30px); 
+}
+
+.origins-content h2 { margin-top: 0; }
+
+.learn-btn {
+    display: inline-block;
+    margin-top: 30px;
+    padding: 12px 30px;
+    border: 1px solid #e0c097;
+    color: #e0c097;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 0.8rem;
+    transition: all 0.3s ease;
+}
+
+.learn-btn:hover {
+    background: #e0c097;
+    color: #000;
+}
+
 .fore-leaf { 
     position: absolute; bottom: -50px; right: -50px; width: 400px; z-index: 4; 
-    filter: brightness(0.8); clip-path: ellipse(60% 60% at 50% 50%);
+    filter: brightness(0.8);
+    clip-path: ellipse(60% 60% at 50% 50%);
+    pointer-events: none; /* Let clicks pass through */
 }
-.menu-section { padding: 100px 10%; background-color: #0a0a0a; text-align: center; }
-.menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-top: 60px; text-align: left; }
-.menu-item { padding: 30px; background: #111; border: 1px solid #222; }
-.menu-item h3 { margin: 0 0 10px 0; color: #fff; }
-.menu-item .price { display: block; margin-top: 20px; color: #e0c097; font-weight: 700; }
+
+/* --- MENU SECTION (Enhanced) --- */
+.menu-section { 
+    padding: 120px 10%; 
+    background-color: #0a0a0a; 
+    text-align: center; 
+}
+
+.menu-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+    gap: 40px; 
+    margin-top: 80px; 
+    text-align: left; 
+}
+
+.menu-item { 
+    padding: 40px; 
+    background: #111; 
+    border: 1px solid #222; 
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    opacity: 0; /* Hidden by default for GSAP */
+}
+
+/* Hover Effect for Menu Cards */
+.menu-item:hover {
+    transform: translateY(-10px);
+    border-color: #e0c097;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+.menu-item h3 { 
+    margin: 0 0 15px 0; 
+    color: #fff; 
+    font-size: 1.5rem;
+}
+
+.menu-item .price { 
+    display: block; 
+    margin-top: 20px; 
+    color: #e0c097; 
+    font-weight: 700; 
+    font-size: 1.2rem;
+}
+
+/* Add a decorative line under menu items */
+.menu-item::after {
+    content: '';
+    display: block;
+    width: 30px;
+    height: 2px;
+    background: #333;
+    margin-top: 20px;
+    transition: width 0.3s ease, background 0.3s ease;
+}
+
+.menu-item:hover::after {
+    width: 100%;
+    background: #e0c097;
+}
+
 html { scroll-behavior: smooth; }
 
 /* ========================================= */
@@ -224,8 +324,8 @@ html { scroll-behavior: smooth; }
     }
 
     .origins { flex-direction: column; padding: 80px 20px; text-align: center; }
-    .origins-content { margin-bottom: 50px; }
-    .fore-leaf { width: 200px; height: auto; right: -10px; bottom: -10px; opacity: 0.6; }
+    .origins-content { text-align: center; }
+    .fore-leaf { width: 150px; right: -10px; bottom: 0px; }
     .menu-section { padding: 60px 20px; }
     .menu-grid { grid-template-columns: 1fr; gap: 30px; }
 
