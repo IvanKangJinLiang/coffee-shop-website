@@ -369,10 +369,16 @@ html { scroll-behavior: smooth; }
 
     /* --- MOBILE BEAN PILE --- */
     .bean-floor-container {
-        /* Ensure it sits at the very bottom of the relative container */
-        bottom: 0px; 
-        height: 100%;
-        /* Ensure it doesn't get hidden if the container is tight */
+        position: absolute;
+        
+        /* CHANGED: Lift the floor way up (150px from bottom) */
+        bottom: 150px; 
+        
+        left: 0;
+        width: 100%;
+        height: 100%; 
+        z-index: 20; 
+        pointer-events: none;
         overflow: visible; 
     }
     
