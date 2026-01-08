@@ -370,17 +370,17 @@ html { scroll-behavior: smooth; }
     .details { flex-direction: column; padding: 60px 20px; height: auto; justify-content: flex-start; gap: 40px; }
     .details .text-block { width: 100%; text-align: center; margin-bottom: 0; z-index: 10; }
 
-    /* --- HIDE FALLING BEANS (CEILING) --- */
+    /* --- HIDE FALLING BEANS (THE CEILING) ON MOBILE --- */
     .r-bean {
         display: none !important;
     }
 
-    /* --- MOBILE BEAN PILE (FLOOR WITH GAP) --- */
+    /* --- MOBILE BEAN PILE (THE FLOOR) --- */
     .bean-floor-container {
         position: absolute;
-        /* Adjusted to leave space between cup and beans */
-        bottom: 0; 
-        left: 10;
+        /* Lifted up as requested previously */
+        bottom: 150px; 
+        left: 0;
         width: 100%;
         height: 100%; 
         z-index: 20; 
@@ -404,6 +404,7 @@ html { scroll-behavior: smooth; }
         margin-left: 0; 
     }
 
+    /* Machine Group Positioning */
     .machine-group { left: 55%; }
     .cup-group { bottom: -20%; left: 45%; transform: translateX(-50%); }
     
