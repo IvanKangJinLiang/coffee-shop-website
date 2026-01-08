@@ -96,15 +96,14 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==================================================
     // 3. MAIN BREW TIMELINE
     // ==================================================
-    // Optimization: Shorter scroll distance on mobile prevents "stuck" feeling
     const isMobile = window.innerWidth < 768;
     
     const brewTl = gsap.timeline({
         scrollTrigger: {
             trigger: "#process",
             start: "top top",
-            // Mobile: 2000px scroll (faster) | Desktop: 4000px (slower)
-            end: isMobile ? "+=2000" : "+=4000", 
+            // Slower scroll on mobile to give time to see the rolling
+            end: isMobile ? "+=3000" : "+=5000", 
             scrub: 1, 
             pin: true, 
             anticipatePin: 1
@@ -112,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     brewTl
-        // --- A. Machine Brewing ---
+        // --- A. Machine Brewing (Standard) ---
         .to(".r-bean", { y: 200, rotation: 360, ease: "power1.in", stagger: 0.1, duration: 2 })
         .to(".r-bean", { opacity: 0, scale: 0.5, duration: 0.5 }, "-=0.5")
         .to(".r-stream", { height: 180, duration: 2, ease: "none" })
@@ -120,33 +119,53 @@ document.addEventListener("DOMContentLoaded", () => {
         .to(".r-steam", { opacity: 0.8, y: -50, duration: 2 }, "<")
         .to(".r-stream", { height: 0, opacity: 0, duration: 0.5 })
 
-        // --- B. The Floor Whirlpool Effect (Optimized) ---
+        // --- B. The "Rolling into V-Hole" Effect ---
         .to(".floor-bean", {
-            duration: 3, 
-            ease: "expo.in", 
-            force3D: true, // Use GPU
+            duration: 8, // Very long duration so the roll feels heavy/slow
+            ease: "none", // Linear speed = looks like constant rolling
+            force3D: true,
             
-            // 1. SUCK INWARDS (Horizontal Center)
-            // Optimization: Calculate percentage distance instead of pixels
-            // 50% is center. If bean is at 10%, it needs to move +40%.
+            // 1. ROLL TO CENTER (Horizontal)
             x: (i, target) => {
-                const currentLeft = parseFloat(target.dataset.left); // Read from data, not DOM
-                const distanceToCenter = 50 - currentLeft;
-                return distanceToCenter + "vw"; // Move in Viewport Width units
+                const rect = target.getBoundingClientRect();
+                const centerX = window.innerWidth / 2;
+                // Move bean to the exact center X
+                return centerX - rect.left - (rect.width/2);
             },
             
-            // 2. SINK INTO FLOOR
+            // 2. DROP INTO ABYSS (Vertical)
+            // They stay on the floor for a bit, then drop deep
             y: (i, target) => {
-                return parseFloat(target.style.bottom); 
+                // Drop 300px down (simulating the deep hole)
+                return 300; 
             },
 
-            scale: 0,       
-            opacity: 0,     
-            rotation: 1080, 
+            // 3. PHYSICS ROTATION
+            // Calculate actual distance to rotate like a wheel
+            rotation: (i, target) => {
+                const rect = target.getBoundingClientRect();
+                const centerX = window.innerWidth / 2;
+                const distanceToTravel = centerX - rect.left;
+                
+                // Circumference of a 30px bean is ~94px
+                // Rotations = Distance / 94 * 360 degrees
+                // We multiply by 1.5 to make them spin a bit faster than reality (looks better)
+                const rotations = (distanceToTravel / 94) * 360 * 1.5;
+                
+                return rotations;
+            },
+
+            scale: 0.2,     // Shrink as they fall deep
+            opacity: 0,     // Fade out at the bottom of the hole
             
+            // 4. THE V-SHAPE FORMATION
+            // This creates the "Queue". 
+            // 'from: center' opens the hole in the middle first.
+            // 'amount: 5' means the last bean takes 5 seconds to start falling.
             stagger: {
-                amount: 1.5,
-                from: "center" 
+                amount: 5, 
+                from: "center", 
+                grid: "auto"
             }
         }, "+=0.1");
 

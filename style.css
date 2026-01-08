@@ -379,8 +379,8 @@ html { scroll-behavior: smooth; }
     .bean-floor-container {
         position: absolute;
         /* Adjusted to leave space between cup and beans */
-        bottom: 80px; 
-        left: 0;
+        bottom: 0; 
+        left: 10;
         width: 100%;
         height: 100%; 
         z-index: 20; 
