@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Shop</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">Coffee Shop</div>
+
+        <div class="menu-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#process">Process</a></li>
+                <li><a href="#origins">Origins</a></li>
+                <li><a href="#menu">Menu</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="banner" id="home">
+        <div class="content">
+            <div class="title">Morning Brew</div>
+            <p>Experience rich coffee taste.</p>
+        </div>
+    </div>
+
+    <section class="details" id="process">
+        <div class="text-block">
+            <h2>The Extraction</h2>
+            <p>Witness the transformation. We select only the finest robusta and arabica beans. Roasted delicately, ground precisely, and extracted under immense pressure.</p>
+            <p class="scroll-hint">Scroll slowly to brew.</p>
+        </div>
+
+        <div class="animation-block realistic-brew">
+            <svg class="r-bean rb1" viewBox="0 0 100 100"><path d="M50,90 C20,90 10,50 30,20 C50,-10 90,10 90,40 C90,70 70,90 50,90 M45,25 Q55,50 45,80" fill="#4B3621" stroke="#3E2B1F" stroke-width="3" /></svg>
+            <svg class="r-bean rb2" viewBox="0 0 100 100"><path d="M50,90 C20,90 10,50 30,20 C50,-10 90,10 90,40 C90,70 70,90 50,90 M45,25 Q55,50 45,80" fill="#3E2B1F" stroke="#2A1A10" stroke-width="3" /></svg>
+            <svg class="r-bean rb3" viewBox="0 0 100 100"><path d="M50,90 C20,90 10,50 30,20 C50,-10 90,10 90,40 C90,70 70,90 50,90 M45,25 Q55,50 45,80" fill="#4B3621" stroke="#3E2B1F" stroke-width="3" /></svg>
+            <svg class="r-bean rb4" viewBox="0 0 100 100"><path d="M50,90 C20,90 10,50 30,20 C50,-10 90,10 90,40 C90,70 70,90 50,90 M45,25 Q55,50 45,80" fill="#3E2B1F" stroke="#2A1A10" stroke-width="3" /></svg>
+            <svg class="r-bean rb5" viewBox="0 0 100 100"><path d="M50,90 C20,90 10,50 30,20 C50,-10 90,10 90,40 C90,70 70,90 50,90 M45,25 Q55,50 45,80" fill="#4B3621" stroke="#3E2B1F" stroke-width="3" /></svg>
+
+            <div class="machine-group">
+                <svg class="r-portafilter" viewBox="0 0 300 150">
+                    <rect x="180" y="40" width="120" height="30" rx="5" fill="#1a1a1a" />
+                    <path d="M20,20 L180,20 L180,60 C180,110 100,110 100,110 C100,110 20,110 20,60 Z" fill="#555" stroke="#333" stroke-width="2"/>
+                    <rect x="10" y="10" width="180" height="15" fill="#777" />
+                    <path d="M80,110 L80,130 L90,130 L90,110" fill="#555"/>
+                    <path d="M120,110 L120,130 L110,130 L110,110" fill="#555"/>
+                </svg>
+                <div class="r-stream"></div>
+            </div>
+
+            <div class="cup-group">
+                <div class="r-steam"></div>
+                <div class="r-cup-base">
+                    <div class="r-liquid-fill"></div>
+                </div>
+            </div>
+        </div>
+        <div class="bean-floor-container"></div>
+    </section>
+
+    <section class="origins" id="origins">
+        <div class="origins-bg-layer"></div> 
+        <div class="origins-content">
+            <h2>Deep Roots</h2>
+            <p>Our journey begins in the volcanic soils of Indonesia. The high altitude, consistent rainfall, and rich earth create a bean profile unlike any other.</p>
+            <a href="#" class="learn-btn">Explore the Farm</a>
+        </div>
+        <img src="https://images.unsplash.com/photo-1596327038165-385208eb6742?w=400&q=80" class="fore-leaf">
+    </section>
+
+    <section class="menu-section" id="menu">
+        <h2>The Collection</h2>
+        <div class="menu-grid">
+            <div class="menu-item">
+                <h3>Espresso Noir</h3>
+                <span class="price">$4.50</span>
+            </div>
+            <div class="menu-item">
+                <h3>Charcoal Latte</h3>
+                <span class="price">$6.00</span>
+            </div>
+            <div class="menu-item">
+                <h3>Cold Brew Reserve</h3>
+                <span class="price">$5.50</span>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

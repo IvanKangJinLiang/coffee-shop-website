@@ -1,0 +1,228 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap');
+
+body { margin: 0; background-color: #0d0d0d; color: #fff; font-family: 'Poppins', sans-serif; overflow-x: hidden; }
+h2 { font-family: 'Playfair Display', serif; font-size: 3em; margin-bottom: 20px; color: #e0c097; }
+p { line-height: 1.7; color: #aaa; }
+section { min-height: 100vh; box-sizing: border-box; }
+
+/* HEADER */
+header {
+    position: absolute; top: 0; left: 0; width: 100%; padding: 30px 50px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; z-index: 10;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+}
+header .logo { font-family: 'Playfair Display', serif; font-size: 1.5em; font-weight: 700; color: #e0c097; }
+header nav ul { display: flex; gap: 30px; list-style: none; padding: 0; margin: 0; }
+header nav ul li a { text-decoration: none; color: #fff; text-transform: uppercase; font-size: 0.9em; letter-spacing: 1px; }
+
+/* --- MENU TOGGLE STYLES --- */
+.menu-toggle {
+    display: none; 
+    flex-direction: column;
+    cursor: pointer;
+    gap: 5px;
+    z-index: 1001; 
+}
+.menu-toggle span {
+    width: 30px; height: 3px; background-color: #e0c097; transition: 0.3s; border-radius: 2px;
+}
+.menu-toggle.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
+.menu-toggle.active span:nth-child(2) { opacity: 0; }
+.menu-toggle.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
+
+/* --- BANNER --- */
+.banner { 
+    display: flex; justify-content: center; align-items: center; 
+    height: 100vh; position: relative; text-align: center; 
+}
+.banner .content .title { font-family: 'Playfair Display', serif; font-size: 8vw; line-height: 1; position: relative; z-index: 2; }
+.banner .content p { margin-top: 10px; font-size: 1.2em; letter-spacing: 2px; text-transform: uppercase; opacity: 0.8; position: relative; z-index: 2; }
+.banner::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: url('https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=2071&auto=format&fit=crop'); 
+    background-size: cover; background-position: center; z-index: -1;
+    -webkit-mask-image: url('ink.gif'); mask-image: url('ink.gif');
+    -webkit-mask-size: cover; mask-size: cover;
+    -webkit-mask-position: center; mask-position: center;
+    -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+}
+
+/* --- DETAILS SECTION --- */
+.details {
+    padding: 100px 5%; 
+    background-color: #111; 
+    display: flex; align-items: center; justify-content: space-around;
+    position: relative; overflow: hidden; 
+}
+.details .text-block { width: 35%; z-index: 2; }
+.realistic-brew { width: 50%; height: 600px; position: relative; }
+
+/* MACHINE BEANS (Falling) */
+.r-bean {
+    position: absolute; width: 40px; height: 40px; top: -100px; z-index: 5;
+    left: 50%; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.5));
+}
+.rb1 { margin-left: -80px; top: -60px; transform: rotate(10deg); }
+.rb2 { margin-left: -40px; transform: rotate(-20deg); width: 35px; }
+.rb3 { margin-left: -110px; transform: rotate(45deg); }
+.rb4 { margin-left: -50px; top: -150px; transform: rotate(90deg); }
+.rb5 { margin-left: -78px; top: -180px; transform: rotate(-10deg); width: 35px; }
+
+.bean-floor-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; 
+    z-index: 20; 
+    pointer-events: none;
+    overflow: visible; /* CHANGED: Allow beans to hang slightly off if needed */
+}
+
+/* The individual bean style */
+.floor-bean {
+    position: absolute;
+    /* Bottom is set by JS */
+    width: 45px; 
+    height: 45px;
+    filter: drop-shadow(3px 3px 2px rgba(0,0,0,0.8)); /* Tighter shadow for floor look */
+    will-change: transform;
+}
+
+/* MACHINE & CUP */
+.machine-group {
+    position: absolute; top: 150px; left: 48%; 
+    transform: translateX(-50%); z-index: 4; 
+    display: flex; flex-direction: column; align-items: center;
+}
+.r-portafilter { 
+    width: 280px; height: 140px; 
+    filter: drop-shadow(0px 10px 10px rgba(0,0,0,0.5));
+}
+.r-stream {
+    width: 8px; height: 0; 
+    background: linear-gradient(to bottom, #3e2417, #d4a574);
+    margin-top: -30px; position: relative; z-index: 10;
+    box-shadow: 0 0 5px rgba(212, 165, 116, 0.3); margin-left: -95px; 
+}
+.cup-group {
+    position: absolute; bottom: 50px; left: 45%; 
+    transform: translateX(-62%); width: 160px; height: 130px; z-index: 3;
+}
+.r-cup-base { 
+    width: 100%; height: 100%; 
+    background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 5px 5px 50px 50px; 
+    backdrop-filter: blur(2px);
+    overflow: hidden; position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.r-liquid-fill {
+    position: absolute; bottom: 0; left: 0; width: 100%; height: 0%;
+    background: linear-gradient(to top, #2c1a10, #4a2c1d);
+    z-index: 3; opacity: 0.95;
+}
+.r-steam {
+    position: absolute; top: -40px; left: 50%; transform: translateX(-50%);
+    width: 60px; height: 60px;
+    background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+    filter: blur(20px); opacity: 0;
+}
+
+/* ORIGINS & MENU SECTIONS */
+.origins { position: relative; display: flex; align-items: center; padding: 0 10%; overflow: hidden; }
+.origins-bg-layer {
+    position: absolute; top: 0; left: 0; width: 100%; height: 120%;
+    background-image: url('https://images.unsplash.com/photo-1519336367661-eba9c1dfa5e9?q=80&w=2070&auto=format&fit=crop');
+    background-size: cover; z-index: 1; filter: brightness(0.4);
+}
+.origins-content { position: relative; z-index: 3; max-width: 500px; }
+.fore-leaf { 
+    position: absolute; bottom: -50px; right: -50px; width: 400px; z-index: 4; 
+    filter: brightness(0.8); clip-path: ellipse(60% 60% at 50% 50%);
+}
+.menu-section { padding: 100px 10%; background-color: #0a0a0a; text-align: center; }
+.menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-top: 60px; text-align: left; }
+.menu-item { padding: 30px; background: #111; border: 1px solid #222; }
+.menu-item h3 { margin: 0 0 10px 0; color: #fff; }
+.menu-item .price { display: block; margin-top: 20px; color: #e0c097; font-weight: 700; }
+html { scroll-behavior: smooth; }
+
+/* ========================================= */
+/* --- MOBILE RESPONSIVENESS UPDATED --- */
+/* ========================================= */
+@media screen and (max-width: 768px) {
+    
+    header {
+        position: fixed; top: 0; left: 0; width: 100%; padding: 20px;
+        background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0)); z-index: 1000;
+    }
+    .menu-toggle { display: flex; }
+    
+    header nav {
+        position: absolute; top: 100%; left: 0; width: 100%; height: auto; 
+        background: #1a1a1a; border-bottom: 1px solid #333; box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        display: flex; flex-direction: column; justify-content: flex-start; align-items: flex-start;
+        padding: 20px 0; clip-path: inset(0 0 100% 0); transition: clip-path 0.5s ease-in-out; z-index: 1000;
+    }
+    header nav.active { clip-path: inset(0 0 0 0); }
+    header nav ul { flex-direction: column; gap: 25px; text-align: left; width: 100%; padding-left: 40px; box-sizing: border-box; }
+    header nav ul li a { font-size: 1.2rem; font-family: 'Poppins', sans-serif; display: block; width: 100%; }
+
+    h2 { font-size: 2.5em; line-height: 1.2; }
+    .banner .content .title { font-size: 12vw; }
+    .banner .content p { font-size: 1em; padding: 0 20px; }
+
+    .details { flex-direction: column; padding: 60px 20px; height: auto; justify-content: flex-start; gap: 40px; }
+    .details .text-block { width: 100%; text-align: center; margin-bottom: 0; z-index: 10; }
+
+    /* --- MOBILE BEAN PILE --- */
+    .bean-floor-container {
+        /* Ensure it sits at the very bottom of the relative container */
+        bottom: 0px; 
+        height: 100%;
+        /* Ensure it doesn't get hidden if the container is tight */
+        overflow: visible; 
+    }
+    
+    .floor-bean {
+        width: 28px; 
+        height: 28px;
+    }
+
+    /* --- ANIMATION STAGE (MOVED UP) --- */
+    .realistic-brew {
+        width: 100%; 
+        /* Reduced height slightly so the bottom floor appears 'higher' visually */
+        height: 400px; 
+        
+        transform: scale(0.7); 
+        transform-origin: top center;
+        
+        /* CHANGED: Pull it upwards significantly */
+        margin-top: -80px; 
+        margin-left: 0; 
+    }
+
+    .r-bean { left: 55%; width: 30px; }
+    .rb1 { margin-left: -50px; top: -30px; transform: rotate(15deg); }
+    .rb2 { margin-left: -100px; top: -40px; transform: rotate(-25deg); }
+    .rb3 { margin-left: -60px; top: -60px; transform: rotate(40deg); }
+    .rb4 { margin-left: -30px; top: -90px; transform: rotate(90deg); }
+    .rb5 { margin-left: -90px; top: -80px; transform: rotate(-10deg); }
+
+    .machine-group { left: 55%; }
+    .cup-group { bottom: -20%; left: 45%; transform: translateX(-50%); }
+    .r-stream { 
+        margin-left: 0; 
+        left: -17%;
+        transform: scaleY(0.7); /* Makes stream 40% shorter */
+        transform-origin: top center; /* Shrinks from bottom up */
+    }
+
+    .origins { flex-direction: column; padding: 80px 20px; text-align: center; }
+    .origins-content { margin-bottom: 50px; }
+    .fore-leaf { width: 200px; height: auto; right: -10px; bottom: -10px; opacity: 0.6; }
+    .menu-section { padding: 60px 20px; }
+    .menu-grid { grid-template-columns: 1fr; gap: 30px; }
+}
