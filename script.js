@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ==================================================
-    // 2. GENERATE BEANS (OPTIMIZED)
+    // 2. GENERATE BEANS
     // ==================================================
     const floorContainer = document.querySelector('.bean-floor-container');
     
@@ -40,10 +40,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 fill="#4B3621" stroke="#3E2B1F" stroke-width="3" />
             </svg>`;
 
-        // OPTIMIZATION: Check screen width
+        // Mobile check
         const isMobile = window.innerWidth < 768;
-        
-        // Mobile: 50 beans (Performance) | Desktop: 180 beans (Density)
         const beanCount = isMobile ? 50 : 180; 
 
         for (let i = 0; i < beanCount; i++) {
@@ -54,11 +52,9 @@ document.addEventListener("DOMContentLoaded", () => {
             // Positioning
             const randomLeft = Math.random() * 100;
             div.style.left = randomLeft + "%";
-            
-            // Store specific data for the vacuum later (Avoids layout thrashing)
             div.dataset.left = randomLeft; 
 
-            // Weighted Height Logic
+            // Weighted Height
             let landPosition;
             if (Math.random() < 0.9) {
                 landPosition = Math.random() * 15; 
@@ -70,31 +66,34 @@ document.addEventListener("DOMContentLoaded", () => {
             
             // Random Rotation
             div.style.transform = `rotate(${Math.random() * 360}deg) scale(${0.7 + Math.random() * 0.5})`;
-            
-            // Optimization: Static z-index on mobile avoids layer blending costs
             div.style.zIndex = isMobile ? 2 : Math.floor(Math.random() * 6); 
             
+            // INITIAL STATE: Hide them immediately so no "frozen ceiling"
+            gsap.set(div, { opacity: 0 });
+
             floorContainer.appendChild(div);
         }
 
-        // --- ANIMATION A: THE RAIN ---
-        gsap.from(".floor-bean", {
+        // --- ANIMATION A: THE RAIN (FIXED) ---
+        gsap.to(".floor-bean", {
             scrollTrigger: {
                 trigger: "#process",
                 start: "top 60%", 
                 toggleActions: "play none none none"
             },
-            y: -window.innerHeight, 
-            opacity: 1,
+            // We use .fromTo logic here by animating TO the natural state
+            // Initial state was set above by gsap.set
+            startAt: { y: -window.innerHeight * 1.5, opacity: 1 }, // Start WAY higher & Visible
+            y: 0, // Land at bottom
             duration: 1.2,
             ease: "bounce.out",
-            force3D: true, // Use GPU
+            force3D: true, 
             stagger: { amount: 1, from: "random" }
         });
     }
 
     // ==================================================
-    // 3. MAIN BREW TIMELINE
+    // 3. MAIN BREW TIMELINE (WITH ROLLING V-TUNNEL)
     // ==================================================
     const isMobile = window.innerWidth < 768;
     
@@ -102,7 +101,6 @@ document.addEventListener("DOMContentLoaded", () => {
         scrollTrigger: {
             trigger: "#process",
             start: "top top",
-            // Slower scroll on mobile to give time to see the rolling
             end: isMobile ? "+=3000" : "+=5000", 
             scrub: 1, 
             pin: true, 
@@ -111,9 +109,26 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     brewTl
-        // --- A. Machine Brewing (Standard) ---
-        .to(".r-bean", { y: 200, rotation: 360, ease: "power1.in", stagger: 0.1, duration: 2 })
-        .to(".r-bean", { opacity: 0, scale: 0.5, duration: 0.5 }, "-=0.5")
+        // --- A. Machine Brewing (FIXED) ---
+        // 1. Beans Fall & Fade In
+        .to(".r-bean", { 
+            y: 280,       // Drop deeper (was 200)
+            rotation: 360, 
+            opacity: 1,   // Visible as they fall
+            ease: "power1.in", 
+            stagger: 0.1, 
+            duration: 1.5 
+        })
+        
+        // 2. Beans Vanish (The "Grind" Effect)
+        .to(".r-bean", { 
+            opacity: 0,   // Fade out completely
+            scale: 0,     // Shrink to nothing
+            duration: 0.3, 
+            stagger: 0.1  // Fade out one by one matching the fall
+        }, "-=1.2")       // Start fading 1.2s before the fall ends (Overlap)
+
+        // 3. The Stream Starts
         .to(".r-stream", { height: 180, duration: 2, ease: "none" })
         .to(".r-liquid-fill", { height: "85%", duration: 3, ease: "none" }, "<0.5")
         .to(".r-steam", { opacity: 0.8, y: -50, duration: 2 }, "<")
@@ -121,173 +136,102 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // --- B. The "Rolling into V-Hole" Effect ---
         .to(".floor-bean", {
-            duration: 8, // Very long duration so the roll feels heavy/slow
-            ease: "none", // Linear speed = looks like constant rolling
+            duration: 8, // Slow roll
+            ease: "none", 
             force3D: true,
             
-            // 1. ROLL TO CENTER (Horizontal)
+            // 1. ROLL TO CENTER
             x: (i, target) => {
                 const rect = target.getBoundingClientRect();
                 const centerX = window.innerWidth / 2;
-                // Move bean to the exact center X
                 return centerX - rect.left - (rect.width/2);
             },
             
-            // 2. DROP INTO ABYSS (Vertical)
-            // They stay on the floor for a bit, then drop deep
+            // 2. DROP INTO ABYSS (Deep Drop)
             y: (i, target) => {
-                // Drop 300px down (simulating the deep hole)
-                return 300; 
+                return 300; // Drops 300px down
             },
 
-            // 3. PHYSICS ROTATION
-            // Calculate actual distance to rotate like a wheel
+            // 3. PHYSICS ROTATION (Wheel Roll)
             rotation: (i, target) => {
                 const rect = target.getBoundingClientRect();
                 const centerX = window.innerWidth / 2;
                 const distanceToTravel = centerX - rect.left;
-                
-                // Circumference of a 30px bean is ~94px
-                // Rotations = Distance / 94 * 360 degrees
-                // We multiply by 1.5 to make them spin a bit faster than reality (looks better)
-                const rotations = (distanceToTravel / 94) * 360 * 1.5;
-                
-                return rotations;
+                // Calculate rotation based on distance
+                return (distanceToTravel / 94) * 360 * 1.5;
             },
 
-            scale: 0.2,     // Shrink as they fall deep
-            opacity: 0,     // Fade out at the bottom of the hole
+            scale: 0.2,     
+            opacity: 0,     
             
             // 4. THE V-SHAPE FORMATION
-            // This creates the "Queue". 
-            // 'from: center' opens the hole in the middle first.
-            // 'amount: 5' means the last bean takes 5 seconds to start falling.
             stagger: {
                 amount: 5, 
-                from: "center", 
+                from: "center", // Middle drops first
                 grid: "auto"
             }
         }, "+=0.1");
 
 
     // ==================================================
-    // 4. ORIGINS SECTION (Parallax + Text Reveal)
+    // 4. ORIGINS SECTION
     // ==================================================
-    
-    // A. Background Parallax
     gsap.to(".origins-bg-layer", {
-        scrollTrigger: { 
-            trigger: "#origins", 
-            start: "top bottom", 
-            end: "bottom top", 
-            scrub: 1 
-        },
-        y: 150, 
-        ease: "none",
-        force3D: true
+        scrollTrigger: { trigger: "#origins", start: "top bottom", end: "bottom top", scrub: 1 },
+        y: 150, ease: "none", force3D: true
     });
 
-    // B. Leaf Parallax
     gsap.to(".fore-leaf", {
-        scrollTrigger: { 
-            trigger: "#origins", 
-            start: "top bottom", 
-            end: "bottom top", 
-            scrub: 1.5 
-        },
-        y: -200, 
-        rotation: 15, 
-        ease: "none",
-        force3D: true
+        scrollTrigger: { trigger: "#origins", start: "top bottom", end: "bottom top", scrub: 1.5 },
+        y: -200, rotation: 15, ease: "none", force3D: true
     });
 
-    // C. Content Reveal (Robust)
-    // 1. Hide elements immediately via JS
     const originElements = document.querySelectorAll(".origins-content h2, .origins-content p, .origins-content a");
-    gsap.set(originElements, { y: 50, opacity: 0 }); // <--- HIDE HERE
+    gsap.set(originElements, { y: 50, opacity: 0 }); 
 
-    // 2. Animate them in
     gsap.to(originElements, {
         scrollTrigger: {
-            trigger: "#origins",
-            start: "top 60%", 
-            toggleActions: "play none none reverse"
+            trigger: "#origins", start: "top 60%", toggleActions: "play none none reverse"
         },
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        stagger: 0.2, 
-        ease: "power3.out"
+        y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: "power3.out"
     });
 
 
     // ==================================================
-    // 5. MENU SECTION (PREMIUM INTERACTION)
+    // 5. MENU SECTION
     // ==================================================
-    
-    // A. Staggered Entrance (Cards fade in one by one)
+    gsap.from(".menu-header", {
+        scrollTrigger: { trigger: ".menu-section", start: "top 70%", toggleActions: "play none none reverse" },
+        y: 50, opacity: 0, duration: 1, ease: "power3.out"
+    });
+
+    gsap.set(".menu-card", { opacity: 0, y: 100 }); 
+
     ScrollTrigger.batch(".menu-card", {
         start: "top 85%",
-        onEnter: batch => gsap.to(batch, { 
-            opacity: 1, 
-            y: 0, 
-            stagger: 0.2, 
-            duration: 1, 
-            ease: "power3.out"
-        })
+        onEnter: batch => gsap.to(batch, { opacity: 1, y: 0, stagger: 0.2, duration: 1.2, ease: "power3.out" })
     });
     
-    gsap.set(".menu-card", { opacity: 0, y: 100 }); // Set hidden state
+    // Magnetic Effect (Desktop Only)
+    if (window.matchMedia("(min-width: 769px)").matches) {
+        const cards = document.querySelectorAll('.menu-card');
+        cards.forEach(card => {
+            const image = card.querySelector('.coffee-img');
+            const number = card.querySelector('.card-bg-text');
 
-    // B. The "Magnetic" Floating Effect
-    // When mouse moves over a card, the image moves slightly 
-    // in the direction of the mouse (Parallax)
-    const cards = document.querySelectorAll('.menu-card');
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
 
-    cards.forEach(card => {
-        const image = card.querySelector('.coffee-img');
-        const number = card.querySelector('.card-bg-text');
-
-        card.addEventListener('mousemove', (e) => {
-            const rect = card.getBoundingClientRect();
-            // Calculate mouse position relative to center of card
-            const x = e.clientX - rect.left - rect.width / 2;
-            const y = e.clientY - rect.top - rect.height / 2;
-
-            // Move Image (Stronger movement)
-            gsap.to(image, {
-                x: x * 0.15, // Move 15% of mouse distance
-                y: y * 0.15 - 50, // Keep the -50px offset we set in CSS
-                rotation: x * 0.05, // Slight tilt
-                duration: 0.5,
-                ease: "power2.out"
+                gsap.to(image, { x: x * 0.2, y: (y * 0.2) - 50, rotation: x * 0.05, duration: 0.6, ease: "power2.out" });
+                gsap.to(number, { x: -x * 0.1, y: -y * 0.1, duration: 0.6, ease: "power2.out" });
             });
 
-            // Move Number (Subtle movement in opposite direction for depth)
-            gsap.to(number, {
-                x: -x * 0.05,
-                y: -y * 0.05,
-                duration: 0.5,
-                ease: "power2.out"
+            card.addEventListener('mouseleave', () => {
+                gsap.to(image, { x: 0, y: -50, rotation: 0, duration: 1, ease: "elastic.out(1, 0.5)" });
+                gsap.to(number, { x: 0, y: 0, duration: 1, ease: "power2.out" });
             });
         });
-
-        // Reset on mouse leave
-        card.addEventListener('mouseleave', () => {
-            gsap.to(image, {
-                x: 0,
-                y: -40, // Back to CSS original position
-                rotation: 0,
-                duration: 0.8,
-                ease: "elastic.out(1, 0.5)"
-            });
-            
-            gsap.to(number, {
-                x: 0,
-                y: 0,
-                duration: 0.8,
-                ease: "power2.out"
-            });
-        });
-    });
+    }
 });

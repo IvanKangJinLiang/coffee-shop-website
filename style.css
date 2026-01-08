@@ -58,14 +58,23 @@ header nav ul li a { text-decoration: none; color: #fff; text-transform: upperca
 
 /* MACHINE BEANS (Falling) */
 .r-bean {
-    position: absolute; width: 40px; height: 40px; top: -100px; z-index: 5;
-    left: 50%; filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.5));
+    position: absolute; 
+    width: 40px; 
+    height: 40px; 
+    
+    /* CHANGED: Brought them down from -100px to 0px so they are visible */
+    top: 0px; 
+    
+    z-index: 5;
+    left: 50%; 
+    filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.5));
 }
-.rb1 { margin-left: -80px; top: -60px; transform: rotate(10deg); }
-.rb2 { margin-left: -40px; transform: rotate(-20deg); width: 35px; }
-.rb3 { margin-left: -110px; transform: rotate(45deg); }
-.rb4 { margin-left: -50px; top: -150px; transform: rotate(90deg); }
-.rb5 { margin-left: -78px; top: -180px; transform: rotate(-10deg); width: 35px; }
+
+.rb1 { margin-left: -80px; top: 40px; transform: rotate(10deg); }
+.rb2 { margin-left: -40px; top: 60px; transform: rotate(-20deg); width: 35px; }
+.rb3 { margin-left: -110px; top: 20px; transform: rotate(45deg); }
+.rb4 { margin-left: -50px; top: 10px; transform: rotate(90deg); }
+.rb5 { margin-left: -78px; top: 0px; transform: rotate(-10deg); width: 35px; }
 
 .bean-floor-container {
     position: absolute;
@@ -370,17 +379,18 @@ html { scroll-behavior: smooth; }
     .details { flex-direction: column; padding: 60px 20px; height: auto; justify-content: flex-start; gap: 40px; }
     .details .text-block { width: 100%; text-align: center; margin-bottom: 0; z-index: 10; }
 
-    /* --- HIDE FALLING BEANS (THE CEILING) ON MOBILE --- */
+    /* --- HIDE FALLING BEANS (CEILING) --- */
     .r-bean {
-        display: none !important;
+        display: block !important; 
+        opacity: 1 !important; /* CHANGED: Ensure they are visible at start */
     }
 
-    /* --- MOBILE BEAN PILE (THE FLOOR) --- */
+    /* --- MOBILE BEAN PILE (FLOOR WITH GAP) --- */
     .bean-floor-container {
         position: absolute;
-        /* Lifted up as requested previously */
-        bottom: 150px; 
-        left: 0;
+        /* Adjusted to leave space between cup and beans */
+        bottom: 0; 
+        left: 10;
         width: 100%;
         height: 100%; 
         z-index: 20; 
@@ -404,7 +414,6 @@ html { scroll-behavior: smooth; }
         margin-left: 0; 
     }
 
-    /* Machine Group Positioning */
     .machine-group { left: 55%; }
     .cup-group { bottom: -20%; left: 45%; transform: translateX(-50%); }
     
