@@ -56,15 +56,59 @@ header nav ul li a { text-decoration: none; color: #fff; text-transform: upperca
 .details .text-block { width: 35%; z-index: 2; }
 .realistic-brew { width: 50%; height: 600px; position: relative; }
 
+/* ========================================= */
+/* --- NEW: CINEMATIC ELEMENTS (GLOW/STEAM) --- */
+/* ========================================= */
+
+/* The Atmospheric Glow behind the machine */
+.machine-glow {
+    position: absolute;
+    top: 60%; left: 40%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 600px;
+    
+    /* CHANGED: Opacity lowered to 0.35 for a smoother look */
+    background: radial-gradient(circle, rgba(224, 192, 151, 0.35) 0%, rgba(0,0,0,0) 70%);
+    
+    z-index: 1; 
+    opacity: 0; 
+    pointer-events: none;
+    mix-blend-mode: screen;
+}
+
+/* The New Steam Puffs */
+.steam-container {
+    position: absolute;
+    top: -60px; left: 50%;
+    transform: translateX(-50%);
+    width: 80px; height: 100px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.steam-puff {
+    position: absolute;
+    border-radius: 50%;
+    /* 1. Increased white opacity from 0.4 to 0.8 */
+    background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
+    /* 2. Reduced blur from 15px to 5px so it is denser and sharper */
+    filter: blur(5px);
+    opacity: 0;
+}
+
+.p1 { width: 40px; height: 40px; bottom: 0; left: 10px; }
+.p2 { width: 50px; height: 50px; bottom: 10px; left: 30px; }
+.p3 { width: 35px; height: 35px; bottom: 5px; left: 20px; }
+
+
+/* --- EXISTING MACHINE ASSETS --- */
+
 /* MACHINE BEANS (Falling) */
 .r-bean {
     position: absolute; 
     width: 40px; 
     height: 40px; 
-    
-    /* CHANGED: Brought them down from -100px to 0px so they are visible */
     top: 0px; 
-    
     z-index: 5;
     left: 50%; 
     filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.5));
@@ -79,7 +123,7 @@ header nav ul li a { text-decoration: none; color: #fff; text-transform: upperca
 /* MACHINE & CUP */
 .machine-group {
     position: absolute; top: 150px; left: 48%; 
-    transform: translateX(-50%); z-index: 4; 
+    transform: translateX(-50%); z-index: 4; /* Higher than glow */
     display: flex; flex-direction: column; align-items: center;
 }
 .r-portafilter { 
@@ -94,7 +138,8 @@ header nav ul li a { text-decoration: none; color: #fff; text-transform: upperca
 }
 .cup-group {
     position: absolute; bottom: 50px; left: 45%; 
-    transform: translateX(-62%); width: 160px; height: 130px; z-index: 3;
+    transform: translateX(-62%); width: 160px; height: 130px; 
+    z-index: 4; /* Higher than glow */
 }
 .r-cup-base { 
     width: 100%; height: 100%; 
@@ -106,15 +151,23 @@ header nav ul li a { text-decoration: none; color: #fff; text-transform: upperca
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
 .r-liquid-fill {
+    /* Keep existing settings */
     position: absolute; bottom: 0; left: 0; width: 100%; height: 0%;
     background: linear-gradient(to top, #2c1a10, #4a2c1d);
     z-index: 3; opacity: 0.95;
+    overflow: visible; /* Essential for bubbles to stick out */
 }
-.r-steam {
-    position: absolute; top: -40px; left: 50%; transform: translateX(-50%);
-    width: 60px; height: 60px;
-    background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
-    filter: blur(20px); opacity: 0;
+
+.boil-svg {
+    position: absolute;
+    /* Move up so the center of circles sits on the water line */
+    top: -15px; 
+    left: 0;
+    width: 100%;
+    height: 30px;
+    z-index: 4;
+    /* Flip it so bubbles grow upwards from the surface line */
+    transform: scaleY(-1); 
 }
 
 /* ORIGINS & MENU SECTIONS */
@@ -358,10 +411,46 @@ html { scroll-behavior: smooth; }
     /* --- HIDE FALLING BEANS (CEILING) --- */
     .r-bean {
         display: block !important; 
-        opacity: 1 !important; /* CHANGED: Ensure they are visible at start */
+        opacity: 1 !important; /* Ensure they are visible at start */
     }
 
-    /* --- ANIMATION STAGE --- */
+    /* --- MOBILE BEAN PILE (Hidden for this new layout) --- */
+    .bean-floor-container {
+        display: none; 
+    }
+    
+    .floor-bean {
+        width: 28px; 
+        height: 28px;
+        filter: none !important; 
+    }
+
+    /* --- CINEMATIC ZOOM & STAGE ADJUSTMENTS --- */
+    
+    /* 1. Resize Glow for Mobile */
+    .machine-glow {
+        /* INCREASED SIZE: Made longer and wider as requested */
+        width: 500px;
+        height: 620px;
+        
+        /* CENTERED: Moves it to the middle of the animation block */
+        top: 70%; 
+        left: 50%; 
+        
+        /* Ensure it stays perfectly circular */
+        border-radius: 50%;
+
+        /* Keep the brightness you liked */
+        background: radial-gradient(circle, rgba(226, 199, 162, 0.6) 0%, rgba(0,0,0,0) 50%);
+    }
+
+    /* 2. Reposition Steam for Mobile */
+    .steam-container {
+        top: -40px; 
+        transform: translateX(-50%) scale(0.7); /* Scale down steam */
+    }
+
+    /* 3. Stage Layout */
     .realistic-brew {
         width: 100%; 
         height: 400px; 
@@ -372,13 +461,24 @@ html { scroll-behavior: smooth; }
     }
 
     .machine-group { left: 55%; }
-    .cup-group { bottom: -20%; left: 44%; transform: translateX(-50%); }
+    
+    /* Lift cup slightly to fit text below */
+    .cup-group { 
+        bottom: -10%; 
+        left: 44%; 
+        transform: translateX(-50%); 
+    }
     
     .r-stream { 
         margin-left: 0; 
         left: -17%;
         transform: scaleY(0.7); 
         transform-origin: top center; 
+    }
+
+    .boil-svg {
+        top: -10px;
+        height: 20px;
     }
 
     .origins { flex-direction: column; padding: 80px 20px; text-align: center; }
@@ -390,7 +490,7 @@ html { scroll-behavior: smooth; }
     .coffee-img { width: 180px; height: 180px; }
     .menu-grid { grid-template-columns: 1fr; gap: 30px; }
 
-    /* Performance Optimizations */
+    /* Performance Optimizations: Kill Filters */
     .r-portafilter, .r-stream, .cup-group, .r-cup-base, .floor-bean {
         filter: none !important;
         box-shadow: none !important;
@@ -402,6 +502,11 @@ html { scroll-behavior: smooth; }
         background: rgba(255, 255, 255, 0.2) !important;
         filter: none !important;
         opacity: 0 !important;
+    }
+    
+    /* Reduce blur on new steam for mobile performance */
+    .steam-puff {
+        filter: blur(3px); /* Reduced from 8px for mobile visibility */
     }
 
     .r-cup-base {

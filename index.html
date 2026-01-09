@@ -42,6 +42,8 @@
         </div>
 
         <div class="animation-block realistic-brew">
+            <div class="machine-glow"></div>
+
             <svg class="r-bean rb1" viewBox="0 0 100 100"><path d="M50,90 C20,90 10,50 30,20 C50,-10 90,10 90,40 C90,70 70,90 50,90 M45,25 Q55,50 45,80" fill="#4B3621" stroke="#3E2B1F" stroke-width="3" /></svg>
             <svg class="r-bean rb2" viewBox="0 0 100 100"><path d="M50,90 C20,90 10,50 30,20 C50,-10 90,10 90,40 C90,70 70,90 50,90 M45,25 Q55,50 45,80" fill="#3E2B1F" stroke="#2A1A10" stroke-width="3" /></svg>
             <svg class="r-bean rb3" viewBox="0 0 100 100"><path d="M50,90 C20,90 10,50 30,20 C50,-10 90,10 90,40 C90,70 70,90 50,90 M45,25 Q55,50 45,80" fill="#4B3621" stroke="#3E2B1F" stroke-width="3" /></svg>
@@ -60,12 +62,26 @@
             </div>
 
             <div class="cup-group">
-                <div class="r-steam"></div>
+                <div class="steam-container">
+                    <div class="steam-puff p1"></div>
+                    <div class="steam-puff p2"></div>
+                    <div class="steam-puff p3"></div>
+                </div>
+                
                 <div class="r-cup-base">
-                    <div class="r-liquid-fill"></div>
+                    <div class="r-liquid-fill">
+                        <svg class="boil-svg" viewBox="0 0 100 30" preserveAspectRatio="none">
+                            <circle class="boil-bubble b1" cx="10" cy="30" r="15" fill="#6f4b3e" />
+                            <circle class="boil-bubble b2" cx="30" cy="30" r="20" fill="#6f4b3e" />
+                            <circle class="boil-bubble b3" cx="50" cy="30" r="15" fill="#6f4b3e" />
+                            <circle class="boil-bubble b4" cx="70" cy="30" r="22" fill="#6f4b3e" />
+                            <circle class="boil-bubble b5" cx="90" cy="30" r="18" fill="#6f4b3e" />
+                        </svg>
+                    </div>
                 </div>
             </div>
         </div>
+        <div class="bean-floor-container"></div>
     </section>
 
     <section class="origins" id="origins">

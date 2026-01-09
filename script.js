@@ -29,15 +29,36 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     // ==================================================
-    // 2. MAIN BREW TIMELINE (CLEAN - NO RAIN)
+    // 2. MAIN BREW TIMELINE
     // ==================================================
     const isMobile = window.innerWidth < 768;
     
+    // Set initial scale
+    gsap.set(".realistic-brew", { scale: isMobile ? 0.7 : 1 });
+
+    // --- NEW: BOILING PHYSICS ---
+    
+    // 0. FIX: HIDE BUBBLES INITIALLY (So they don't show in empty cup)
+    gsap.set(".boil-bubble", { opacity: 0 });
+
+    // 1. Random Simmer Loop (Always Active but invisible at start)
+    gsap.to(".boil-bubble", {
+        scale: 1.1,
+        y: -5, // Move up slightly
+        duration: 0.5,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        stagger: {
+            each: 0.1,
+            from: "random"
+        }
+    });
+
     const brewTl = gsap.timeline({
         scrollTrigger: {
             trigger: "#process",
             start: "top top",
-            // Adjusted scroll length slightly since we removed the floor part
             end: isMobile ? "+=3000" : "+=4000", 
             scrub: 1, 
             pin: true, 
@@ -46,30 +67,51 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     brewTl
-        // --- A. Machine Brewing ---
-        // 1. Beans Fall & Fade In
-        .to(".r-bean", { 
-            y: 280,       // Drop into machine
-            rotation: 360, 
-            opacity: 1,   // Visible as they fall
-            ease: "power1.in", 
-            stagger: 0.1, 
-            duration: 1.5 
-        })
-        
-        // 2. Beans Vanish (The "Grind" Effect)
-        .to(".r-bean", { 
-            opacity: 0,   // Fade out completely
-            scale: 0,     // Shrink to nothing
-            duration: 0.3, 
-            stagger: 0.1  // Fade out one by one
-        }, "-=1.2")       // Start fading 1.2s before the fall ends
+        // --- 0. Stage ---
+        .to(".machine-glow", { opacity: 0.3, duration: 1 })
 
-        // 3. The Stream Starts
+        // --- A. Machine ---
+        .to(".r-bean", { 
+            y: 280, rotation: 360, opacity: 1, ease: "power1.in", stagger: 0.1, duration: 1.5 
+        }, "<")
+        .to(".r-bean", { opacity: 0, scale: 0, duration: 0.3, stagger: 0.1 }, "-=1.0")
+        .to(".machine-glow", { opacity: 0.8, scale: 1.2, duration: 0.5 }, "<")
+
+        // --- B. Pour & BOIL ---
         .to(".r-stream", { height: 180, duration: 2, ease: "none" })
+        .to(".realistic-brew", { scale: isMobile ? 0.85 : 1.1, duration: 4, ease: "none" }, "<")
+
+        // *** THE BOIL EFFECT (Expansion) ***
+        .to(".boil-bubble", { 
+            scale: 1.5, 
+            y: -10, 
+            duration: 0.5, 
+            ease: "rough({ strength: 2, points: 10, template: none, taper: none, randomize: true, clamp: false })"
+        }, "<")
+
+        // 4. Fill Cup & FADE IN BUBBLES
+        // The bubbles fade in exactly when liquid starts rising
         .to(".r-liquid-fill", { height: "85%", duration: 3, ease: "none" }, "<0.5")
-        .to(".r-steam", { opacity: 0.8, y: -50, duration: 2 }, "<")
-        .to(".r-stream", { height: 0, opacity: 0, duration: 0.5 });
+        .to(".boil-bubble", { opacity: 1, duration: 0.5 }, "<") // <--- THIS FIXES THE VISUAL BUG
+        
+        .to(".machine-glow", { opacity: 0.5, scale: 1, duration: 2 }, "<")
+
+        // 5. Finish
+        .to(".r-stream", { height: 0, opacity: 0, duration: 0.5 })
+
+        // *** SETTLE DOWN ***
+        .to(".boil-bubble", { 
+            scale: 1.0, 
+            y: 0, 
+            duration: 1, 
+            ease: "power2.out" 
+        }, "<")
+        
+        // 6. Steam
+        .to(".steam-puff", { 
+            y: -50, opacity: 0.8, scale: 1.5, duration: 2, stagger: 0.3, ease: "power1.out"
+        }, "-=0.2"); 
+
 
     // ==================================================
     // 3. ORIGINS SECTION
