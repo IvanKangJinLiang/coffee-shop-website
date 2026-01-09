@@ -76,30 +76,6 @@ header nav ul li a { text-decoration: none; color: #fff; text-transform: upperca
 .rb4 { margin-left: -50px; top: 10px; transform: rotate(90deg); }
 .rb5 { margin-left: -100px; top: 0px; transform: rotate(-10deg); width: 35px; }
 
-.bean-floor-container {
-    position: absolute;
-    
-    /* CHANGED: Lowered from 150px to 80px to create a gap below the cup */
-    bottom: 80px; 
-    
-    left: 0;
-    width: 100%;
-    height: 100%; 
-    z-index: 20; 
-    pointer-events: none;
-    overflow: visible; 
-}
-
-/* The individual bean style */
-.floor-bean {
-    position: absolute;
-    /* Bottom is set by JS */
-    width: 45px; 
-    height: 45px;
-    filter: drop-shadow(3px 3px 2px rgba(0,0,0,0.8)); /* Tighter shadow for floor look */
-    will-change: transform;
-}
-
 /* MACHINE & CUP */
 .machine-group {
     position: absolute; top: 150px; left: 48%; 
@@ -383,25 +359,6 @@ html { scroll-behavior: smooth; }
     .r-bean {
         display: block !important; 
         opacity: 1 !important; /* CHANGED: Ensure they are visible at start */
-    }
-
-    /* --- MOBILE BEAN PILE (FLOOR WITH GAP) --- */
-    .bean-floor-container {
-        position: absolute;
-        /* Adjusted to leave space between cup and beans */
-        bottom: 0; 
-        left: 10;
-        width: 100%;
-        height: 100%; 
-        z-index: 20; 
-        pointer-events: none;
-        overflow: visible; 
-    }
-    
-    .floor-bean {
-        width: 28px; 
-        height: 28px;
-        filter: none !important; 
     }
 
     /* --- ANIMATION STAGE --- */
