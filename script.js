@@ -1,5 +1,48 @@
 document.addEventListener("DOMContentLoaded", () => {
-    
+    const bgVideo = document.querySelector('.bg-video');
+
+    if (bgVideo) {
+        // 1. Force reset the ink GIF on page load
+        const timestamp = new Date().getTime();
+        const freshMask = `url('ink.gif?v=${timestamp}')`;
+        bgVideo.style.webkitMaskImage = freshMask;
+        bgVideo.style.maskImage = freshMask;
+
+        // 2. Instant Swap + Fade-In Sequence
+        const videoSequence = ["grinder-1080.mp4", "espresso-1080.mp4"];
+        let currentVideoIndex = 0;
+
+        bgVideo.addEventListener('ended', () => {
+            if (currentVideoIndex < videoSequence.length) {
+                
+                // INSTANT: Hide the video immediately so the swap is invisible
+                gsap.set(bgVideo, { opacity: 0 });
+
+                // INSTANT: Change the source
+                bgVideo.src = videoSequence[currentVideoIndex];
+                
+                // If it's the last video (espresso.mp4), enable looping
+                if (currentVideoIndex === videoSequence.length - 1) {
+                    bgVideo.loop = true;
+                }
+
+                bgVideo.load();
+
+                // Once the new video starts playing, fade it in
+                bgVideo.onplay = () => {
+                    gsap.to(bgVideo, { 
+                        opacity: 1, 
+                        duration: 0.5, 
+                        ease: "power1.out" 
+                    });
+                };
+
+                bgVideo.play();
+                currentVideoIndex++;
+            }
+        });
+    }
+
     // --- 0. MENU LOGIC ---
     const menuToggle = document.querySelector('.menu-toggle');
     const nav = document.querySelector('header nav');

@@ -31,19 +31,48 @@ header nav ul li a { text-decoration: none; color: #fff; text-transform: upperca
 
 /* --- BANNER --- */
 .banner { 
-    display: flex; justify-content: center; align-items: center; 
-    height: 100vh; position: relative; text-align: center; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh; 
+    position: relative; 
+    text-align: center;
+    background-color: #000;
+    overflow: hidden; 
 }
-.banner .content .title { font-family: 'Playfair Display', serif; font-size: 8vw; line-height: 1; position: relative; z-index: 2; }
-.banner .content p { margin-top: 10px; font-size: 1.2em; letter-spacing: 2px; text-transform: uppercase; opacity: 0.8; position: relative; z-index: 2; }
+
+/* Base layer behind the video */
 .banner::before {
-    content: ''; position: absolute; inset: 0;
-    background-image: url('https://images.unsplash.com/photo-1497935586351-b67a49e012bf?q=80&w=2071&auto=format&fit=crop'); 
-    background-size: cover; background-position: center; z-index: -1;
-    -webkit-mask-image: url('ink.gif'); mask-image: url('ink.gif');
-    -webkit-mask-size: cover; mask-size: cover;
-    -webkit-mask-position: center; mask-position: center;
-    -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+    content: ''; 
+    position: absolute; 
+    inset: 0;
+    background: #0d0d0d;
+    z-index: 0; 
+}
+
+/* Updated selector to match your HTML class 'bg-video' */
+.bg-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+    z-index: 1;
+    background-color: #000;
+    will-change: opacity;
+    /* Ink Mask remains applied to the video element itself */
+    -webkit-mask-image: url('ink.gif');
+    mask-image: url('ink.gif');
+    -webkit-mask-size: cover;
+    mask-size: cover;
+    
+    filter: brightness(0.5); 
+}
+
+.banner .content {
+    position: relative;
+    z-index: 10; /* Keep text high and readable */
 }
 
 /* --- DETAILS SECTION --- */
@@ -378,12 +407,24 @@ header nav ul li a { text-decoration: none; color: #fff; text-transform: upperca
     border-color: #e0c097;
     color: #000;
 }
+
+.boil-bubble {
+    fill: #c7a17a; /* A golden-tan ochre color */
+    /* Optional: Add a subtle golden glow for extra effect */
+    filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.3));
+}
+
 html { scroll-behavior: smooth; }
 
 /* ========================================= */
 /* --- MOBILE RESPONSIVENESS UPDATED --- */
 /* ========================================= */
 @media screen and (max-width: 768px) {
+    
+    .bg-video {
+        -webkit-mask-size: 100% 100%; 
+        mask-size: 100% 100%;
+    }
     
     header {
         position: fixed; top: 0; left: 0; width: 100%; padding: 20px;
@@ -431,10 +472,10 @@ html { scroll-behavior: smooth; }
     .machine-glow {
         /* INCREASED SIZE: Made longer and wider as requested */
         width: 500px;
-        height: 620px;
+        height: 720px;
         
         /* CENTERED: Moves it to the middle of the animation block */
-        top: 70%; 
+        top: 80%; 
         left: 50%; 
         
         /* Ensure it stays perfectly circular */
@@ -464,7 +505,7 @@ html { scroll-behavior: smooth; }
     
     /* Lift cup slightly to fit text below */
     .cup-group { 
-        bottom: -10%; 
+        bottom: -25%; 
         left: 44%; 
         transform: translateX(-50%); 
     }
@@ -479,6 +520,12 @@ html { scroll-behavior: smooth; }
     .boil-svg {
         top: -10px;
         height: 20px;
+    }
+
+    .boil-bubble {
+        fill: #c7a17a; /* A golden-tan ochre color */
+        /* Optional: Add a subtle golden glow for extra effect */
+        filter: drop-shadow(0 0 2px rgba(255, 215, 0, 0.3));
     }
 
     .origins { flex-direction: column; padding: 80px 20px; text-align: center; }
