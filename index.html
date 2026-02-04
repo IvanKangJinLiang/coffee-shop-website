@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Coffee Shop</title>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
 </head>
 <body>
 
@@ -91,17 +92,9 @@
     </section>
 
     <section class="origins" id="origins">
-        <div class="origins-bg-layer"></div> 
-        <div class="origins-content">
-            <h2>Deep Roots</h2>
-            <p>Our journey begins in the volcanic soils of Indonesia. The high altitude, consistent rainfall, and rich earth create a bean profile unlike any other.</p>
-            <a href="#" class="learn-btn">Explore the Farm</a>
-        </div>
-        <!-- <img 
-            src="https://images.pexels.com/photos/2109009/pexels-photo-2109009.jpeg?auto=compress&cs=tinysrgb&w=600" 
-            class="fore-leaf" 
-            alt="Coffee Leaf"
-        > -->
+        <div id="lottie-danm"></div>
+        
+        <img src="gsap.png" id="final-origin-img" alt="Origins Final">
     </section>
 
     <section class="menu-section" id="menu">
@@ -113,11 +106,14 @@
         <div class="menu-grid">
             
             <div class="menu-card">
-                <!-- <div class="card-bg-text">01</div> -->
                 <div class="card-image-wrapper">
                     <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?q=80&w=600&auto=format&fit=crop" class="coffee-img" alt="Espresso">
                 </div>
                 <div class="card-content">
+                    <div class="flavor-tags">
+                        <span>Strong</span>
+                        <span>Dark</span>
+                    </div>
                     <h3>Espresso Noir</h3>
                     <p class="desc">Intense, velvety, and dark.</p>
                     <div class="card-footer">
@@ -128,11 +124,15 @@
             </div>
 
             <div class="menu-card">
-                <!-- <div class="card-bg-text">02</div> -->
+                <div class="badge">Best Seller</div>
                 <div class="card-image-wrapper">
                     <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=600&auto=format&fit=crop" class="coffee-img" alt="Latte">
                 </div>
                 <div class="card-content">
+                    <div class="flavor-tags">
+                        <span>Detox</span>
+                        <span>Creamy</span>
+                    </div>
                     <h3>Charcoal Latte</h3>
                     <p class="desc">Activated smooth detox.</p>
                     <div class="card-footer">
@@ -143,15 +143,73 @@
             </div>
 
             <div class="menu-card">
-                <!-- <div class="card-bg-text">03</div> -->
                 <div class="card-image-wrapper">
                     <img src="https://images.unsplash.com/photo-1517701550927-30cf4ba1dba5?q=80&w=600&auto=format&fit=crop" class="coffee-img" alt="Cold Brew">
                 </div>
                 <div class="card-content">
-                    <h3>Cold Brew Reserve</h3>
+                    <div class="flavor-tags">
+                        <span>Chilled</span>
+                        <span>Smooth</span>
+                    </div>
+                    <h3>Cold Reserve</h3>
                     <p class="desc">Steeped for 24 hours.</p>
                     <div class="card-footer">
                         <span class="price">RM15.50</span>
+                        <button class="add-btn">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card">
+                <div class="card-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1578314675249-a6910f80cc4e?q=80&w=600&auto=format&fit=crop" class="coffee-img" alt="Mocha">
+                </div>
+                <div class="card-content">
+                    <div class="flavor-tags">
+                        <span>Cocoa</span>
+                        <span>Sweet</span>
+                    </div>
+                    <h3>Velvet Mocha</h3>
+                    <p class="desc">Belgian chocolate infusion.</p>
+                    <div class="card-footer">
+                        <span class="price">RM17.00</span>
+                        <button class="add-btn">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card">
+                <div class="card-image-wrapper">
+                    <img src="matcha.jpg" class="coffee-img" alt="Matcha">
+                </div>
+                <div class="card-content">
+                    <div class="flavor-tags">
+                        <span>Japanese</span>
+                        <span>Earth</span>
+                    </div>
+                    <h3>Kyoto Matcha</h3>
+                    <p class="desc">Ceremonial grade green tea.</p>
+                    <div class="card-footer">
+                        <span class="price">RM16.50</span>
+                        <button class="add-btn">+</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-card">
+                <div class="badge">Must Try</div>
+                <div class="card-image-wrapper">
+                    <img src="https://images.unsplash.com/photo-1599398054066-846f28917f38?q=80&w=600&auto=format&fit=crop" class="coffee-img" alt="Affogato">
+                </div>
+                <div class="card-content">
+                    <div class="flavor-tags">
+                        <span>Dessert</span>
+                        <span>Hot/Cold</span>
+                    </div>
+                    <h3>Classic Affogato</h3>
+                    <p class="desc">Espresso over vanilla bean gelato.</p>
+                    <div class="card-footer">
+                        <span class="price">RM18.00</span>
                         <button class="add-btn">+</button>
                     </div>
                 </div>

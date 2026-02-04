@@ -9,26 +9,42 @@ document.addEventListener("DOMContentLoaded", () => {
         bgVideo.style.maskImage = freshMask;
 
         // 2. Instant Swap + Fade-In Sequence
-        const videoSequence = ["grinder-1080.mp4", "espresso-1080.mp4"];
+        const videoSequence = ["grinder-1080.mp4", "espresso-2.mp4", "latte.mp4", "final.mp4"];
         let currentVideoIndex = 0;
 
         bgVideo.addEventListener('ended', () => {
             if (currentVideoIndex < videoSequence.length) {
-                
-                // INSTANT: Hide the video immediately so the swap is invisible
                 gsap.set(bgVideo, { opacity: 0 });
 
-                // INSTANT: Change the source
-                bgVideo.src = videoSequence[currentVideoIndex];
+                const nextVideo = videoSequence[currentVideoIndex];
+                bgVideo.src = nextVideo;
+
+                // --- UPDATED LOGIC START ---
                 
-                // If it's the last video (espresso.mp4), enable looping
+                // 1. Check if the NEXT video is espresso-2.mp4
+                if (nextVideo === "espresso-2.mp4") {
+                    bgVideo.classList.add('shift-focus');
+                } else {
+                    bgVideo.classList.remove('shift-focus');
+                }
+
+                // 2. NEW: Check for "Zoom Out" (Cinematic Mode) on Mobile
+                if (nextVideo === "latte.mp4" || nextVideo === "final.mp4") {
+                    bgVideo.classList.add('mobile-cinema-mode');
+                } else {
+                    bgVideo.classList.remove('mobile-cinema-mode');
+                }
+
+                // 3. Loop Logic
                 if (currentVideoIndex === videoSequence.length - 1) {
                     bgVideo.loop = true;
+                } else {
+                    bgVideo.loop = false;
                 }
+                // --- UPDATED LOGIC END ---
 
                 bgVideo.load();
 
-                // Once the new video starts playing, fade it in
                 bgVideo.onplay = () => {
                     gsap.to(bgVideo, { 
                         opacity: 1, 
@@ -79,23 +95,19 @@ document.addEventListener("DOMContentLoaded", () => {
     // Set initial scale
     gsap.set(".realistic-brew", { scale: isMobile ? 0.7 : 1 });
 
-    // --- NEW: BOILING PHYSICS ---
-    
-    // 0. FIX: HIDE BUBBLES INITIALLY (So they don't show in empty cup)
+    // --- BOILING PHYSICS ---
+    // Hide bubbles initially
     gsap.set(".boil-bubble", { opacity: 0 });
 
-    // 1. Random Simmer Loop (Always Active but invisible at start)
+    // Random Simmer Loop
     gsap.to(".boil-bubble", {
         scale: 1.1,
-        y: -5, // Move up slightly
+        y: -5,
         duration: 0.5,
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut",
-        stagger: {
-            each: 0.1,
-            from: "random"
-        }
+        stagger: { each: 0.1, from: "random" }
     });
 
     const brewTl = gsap.timeline({
@@ -110,76 +122,122 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     brewTl
-        // --- 0. Stage ---
         .to(".machine-glow", { opacity: 0.3, duration: 1 })
-
-        // --- A. Machine ---
-        .to(".r-bean", { 
-            y: 280, rotation: 360, opacity: 1, ease: "power1.in", stagger: 0.1, duration: 1.5 
-        }, "<")
+        .to(".r-bean", { y: 280, rotation: 360, opacity: 1, ease: "power1.in", stagger: 0.1, duration: 1.5 }, "<")
         .to(".r-bean", { opacity: 0, scale: 0, duration: 0.3, stagger: 0.1 }, "-=1.0")
         .to(".machine-glow", { opacity: 0.8, scale: 1.2, duration: 0.5 }, "<")
-
-        // --- B. Pour & BOIL ---
+        
+        // Pour & Boil
         .to(".r-stream", { height: 180, duration: 2, ease: "none" })
         .to(".realistic-brew", { scale: isMobile ? 0.85 : 1.1, duration: 4, ease: "none" }, "<")
-
-        // *** THE BOIL EFFECT (Expansion) ***
         .to(".boil-bubble", { 
-            scale: 1.5, 
-            y: -10, 
-            duration: 0.5, 
+            scale: 1.5, y: -10, duration: 0.5, 
             ease: "rough({ strength: 2, points: 10, template: none, taper: none, randomize: true, clamp: false })"
         }, "<")
 
-        // 4. Fill Cup & FADE IN BUBBLES
-        // The bubbles fade in exactly when liquid starts rising
+        // Fill Cup
         .to(".r-liquid-fill", { height: "85%", duration: 3, ease: "none" }, "<0.5")
-        .to(".boil-bubble", { opacity: 1, duration: 0.5 }, "<") // <--- THIS FIXES THE VISUAL BUG
-        
+        .to(".boil-bubble", { opacity: 1, duration: 0.5 }, "<")
         .to(".machine-glow", { opacity: 0.5, scale: 1, duration: 2 }, "<")
 
-        // 5. Finish
+        // Finish
         .to(".r-stream", { height: 0, opacity: 0, duration: 0.5 })
+        .to(".boil-bubble", { scale: 1.0, y: 0, duration: 1, ease: "power2.out" }, "<")
+        .to(".steam-puff", { y: -50, opacity: 0.8, scale: 1.5, duration: 2, stagger: 0.3, ease: "power1.out" }, "-=0.2"); 
 
-        // *** SETTLE DOWN ***
-        .to(".boil-bubble", { 
-            scale: 1.0, 
-            y: 0, 
-            duration: 1, 
-            ease: "power2.out" 
-        }, "<")
+
+    // ==================================================
+    // 3. ORIGINS SECTION (ASPECT RATIO FIX)
+    // ==================================================
+    
+    // 1. Detect Mobile for Lottie Configuration
+    const isMobileOrigin = window.innerWidth < 768;
+
+    // 2. THE GEOMETRY FIX:
+    // Desktop ("slice"): Fills the screen, crops the edges (Good for wide screens)
+    // Mobile ("meet"): Fits the image inside the screen (Good for tall screens, prevents zooming)
+    const aspectRatioSetting = isMobileOrigin ? 'xMidYMid meet' : 'xMidYMid slice';
+
+    let lottieAnim = lottie.loadAnimation({
+        container: document.querySelector("#lottie-danm"),
+        renderer: "svg",
+        loop: false,
+        autoplay: false,
+        path: "danm2.json",
+        rendererSettings: {
+            preserveAspectRatio: aspectRatioSetting // <--- THIS IS THE FIX
+        }
+    });
+
+    lottieAnim.addEventListener("DOMLoaded", function() {
         
-        // 6. Steam
-        .to(".steam-puff", { 
-            y: -50, opacity: 0.8, scale: 1.5, duration: 2, stagger: 0.3, ease: "power1.out"
-        }, "-=0.2"); 
+        let mm = gsap.matchMedia();
+        let playhead = { frame: 0 };
 
+        mm.add({
+            isMobile: "(max-width: 768px)",
+            isDesktop: "(min-width: 769px)"
+        }, (context) => {
+            
+            let { isMobile } = context.conditions;
 
-    // ==================================================
-    // 3. ORIGINS SECTION
-    // ==================================================
-    gsap.to(".origins-bg-layer", {
-        scrollTrigger: { trigger: "#origins", start: "top bottom", end: "bottom top", scrub: 1 },
-        y: 150, ease: "none", force3D: true
+            // Geometry Config
+            const clipStart = isMobile ? "circle(0% at 50% 50%)" : "circle(0% at 0% 50%)";
+            const clipEnd   = isMobile ? "circle(150% at 50% 50%)" : "circle(150% at 0% 50%)";
+            const scrollDist = isMobile ? "+=2000" : "+=4000";
+
+            // Force initial state
+            // Note: We remove 'scale: 1.5' for mobile to prevent double-zooming
+            gsap.set("#final-origin-img", { 
+                clipPath: clipStart, 
+                webkitClipPath: clipStart,
+                scale: isMobile ? 1 : 1.5 
+            });
+
+            // Refresh Lottie Layout
+            lottieAnim.resize();
+
+            let originTl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: "#origins",
+                    start: "top top",
+                    end: scrollDist, 
+                    scrub: 1,
+                    pin: true,
+                    anticipatePin: 1,
+                    invalidateOnRefresh: true,
+                    // Force a recalculation when address bar moves
+                    onRefresh: () => lottieAnim.resize() 
+                }
+            });
+
+            originTl
+                // Action 1: Play Lottie
+                .to(playhead, {
+                    frame: lottieAnim.totalFrames - 1,
+                    duration: 4, 
+                    ease: "none",
+                    onUpdate: () => lottieAnim.goToAndStop(playhead.frame, true)
+                })
+
+                // Action 2: Reveal Image
+                .to("#final-origin-img", {
+                    clipPath: clipEnd, 
+                    webkitClipPath: clipEnd,
+                    duration: 3.5, 
+                    ease: "power2.inOut"
+                }, "<1") 
+
+                // Action 3: Scale (Only scale down if we started zoomed in on Desktop)
+                .to("#final-origin-img", {
+                    scale: 1, 
+                    duration: 3.5, 
+                    ease: "power1.out"
+                }, "<"); 
+        });
+
+        gsap.from("#lottie-danm", { opacity: 0, duration: 1 });
     });
-
-    gsap.to(".fore-leaf", {
-        scrollTrigger: { trigger: "#origins", start: "top bottom", end: "bottom top", scrub: 1.5 },
-        y: -200, rotation: 15, ease: "none", force3D: true
-    });
-
-    const originElements = document.querySelectorAll(".origins-content h2, .origins-content p, .origins-content a");
-    gsap.set(originElements, { y: 50, opacity: 0 }); 
-
-    gsap.to(originElements, {
-        scrollTrigger: {
-            trigger: "#origins", start: "top 60%", toggleActions: "play none none reverse"
-        },
-        y: 0, opacity: 1, duration: 1, stagger: 0.2, ease: "power3.out"
-    });
-
-
     // ==================================================
     // 4. MENU SECTION
     // ==================================================
